@@ -28,7 +28,10 @@ RUN yes | pecl install xdebug \
 # git install
 RUN apt-get install -y git
 
-VOLUME /var/www/html/wp-content/themes
+RUN usermod -u 1000 www-data \
+	&& usermod -G staff www-data
+
+VOLUME /var/www/html
 
 ENV TZ JST-9
 ENV WORDPRESS_VERSION 4.4.2-ja
