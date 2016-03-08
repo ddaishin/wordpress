@@ -25,7 +25,10 @@ RUN yes | pecl install xdebug \
     && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini \
     && echo "xdebug.remote_autostart=off" >> /usr/local/etc/php/conf.d/xdebug.ini
 
-VOLUME /var/www/html
+# git install
+RUN apt-get install git
+
+VOLUME /var/www/html/wp-content/themes
 
 ENV TZ JST-9
 ENV WORDPRESS_VERSION 4.4.2-ja
