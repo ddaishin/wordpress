@@ -29,6 +29,7 @@ VOLUME /var/www/html
 
 ENV TZ JST-9
 ENV WORDPRESS_VERSION 4.4.2-ja
+ENV XDEBUG_CONFIG remote_host={{YOUR_IP_ADDRESS}}
 
 # upstream tarballs include ./wordpress/ so this gives us /usr/src/wordpress
 RUN curl -o wordpress.tar.gz -SL https://ja.wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz \
