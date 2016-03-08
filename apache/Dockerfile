@@ -26,7 +26,7 @@ RUN yes | pecl install xdebug \
     && echo "xdebug.remote_autostart=off" >> /usr/local/etc/php/conf.d/xdebug.ini
 
 # git install
-RUN apt-get install git
+RUN apt-get install -y git
 
 VOLUME /var/www/html/wp-content/themes
 
