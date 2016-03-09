@@ -25,7 +25,7 @@ RUN yes | pecl install xdebug \
     && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini \
     && echo "xdebug.remote_autostart=off" >> /usr/local/etc/php/conf.d/xdebug.ini
 
-# fix permission
+# fix permission for osx
 RUN usermod -u 1000 www-data \
 	&& usermod -G staff www-data
 
