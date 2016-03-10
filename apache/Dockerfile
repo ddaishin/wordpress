@@ -32,12 +32,9 @@ RUN { \
 	} > /usr/local/etc/php/conf.d/php-extra.ini
 
 # replace ErrorLog to CommonLog
-RUN { \
-		echo 'CustomLog /proc/self/fd/2 combined'; \
-		echo 'ErrorLog /proc/self/fd/1'; \
-	} > /etc/apache2/conf-available/log.conf
+RUN sed -i -e"s/CustomLog/#CustomLog/" /etc/apache2/apache2.conf
+RUN sed -i -e"s/ErrorLog \/proc\/self\/fd\/2/ErrorLog \/proc\/self\/fd\/1/" /etc/apache2/apache2.conf
 
-RUN a2enconf log
 
 # fix permission for osx
 RUN usermod -u 1000 www-data \
