@@ -35,6 +35,11 @@ RUN { \
 RUN sed -i -e"s/CustomLog/#CustomLog/" /etc/apache2/apache2.conf
 RUN sed -i -e"s/ErrorLog \/proc\/self\/fd\/2/ErrorLog \/proc\/self\/fd\/1/" /etc/apache2/apache2.conf
 
+# Add WP-CLI
+# see https://github.com/conetix/docker-wordpress-wp-cli
+RUN curl -o /bin/wp-cli.phar https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+COPY wp-su.sh /bin/wp
+RUN chmod +x /bin/wp-cli.phar
 
 # fix permission for osx
 RUN usermod -u 1000 www-data \
