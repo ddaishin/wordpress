@@ -32,11 +32,11 @@ RUN usermod -u 1000 www-data \
 VOLUME /var/www/html
 
 ENV TZ JST-9
-ENV WORDPRESS_VERSION 4.4.2-ja
+ENV WORDPRESS_VERSION latest-ja
 ENV XDEBUG_CONFIG remote_host={{YOUR_IP_ADDRESS}}
 
 # upstream tarballs include ./wordpress/ so this gives us /usr/src/wordpress
-RUN curl -o wordpress.tar.gz -SL https://ja.wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz \
+RUN curl -o wordpress.tar.gz -SL https://ja.wordpress.org/${WORDPRESS_VERSION}.tar.gz \
 	&& tar -xzf wordpress.tar.gz -C /usr/src/ \
 	&& rm wordpress.tar.gz \
 	&& chown -R www-data:www-data /usr/src/wordpress
