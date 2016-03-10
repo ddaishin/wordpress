@@ -25,6 +25,12 @@ RUN yes | pecl install xdebug \
     && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini \
     && echo "xdebug.remote_autostart=off" >> /usr/local/etc/php/conf.d/xdebug.ini
 
+# set extra PHP.ini settings
+RUN { \
+		echo 'date.timezone="Asia/Tokyo"'; \
+		echo 'log_errors=On'; \
+	} > /usr/local/etc/php/conf.d/php-extra.ini
+
 # fix permission for osx
 RUN usermod -u 1000 www-data \
 	&& usermod -G staff www-data
