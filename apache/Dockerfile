@@ -29,6 +29,8 @@ RUN yes | pecl install xdebug \
 RUN { \
 		echo 'date.timezone="Asia/Tokyo"'; \
 		echo 'log_errors=On'; \
+		echo 'memory_limit=-1'; \
+		echo 'max_execution_time=0'; \
 	} > /usr/local/etc/php/conf.d/php-extra.ini
 
 # replace ErrorLog to CommonLog
