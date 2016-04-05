@@ -31,6 +31,8 @@ RUN { \
 		echo 'log_errors=On'; \
 		echo 'memory_limit=-1'; \
 		echo 'max_execution_time=0'; \
+		echo 'post_max_size=0'; \
+		echo 'upload_max_filesize=2048G'; \
 	} > /usr/local/etc/php/conf.d/php-extra.ini
 
 # replace ErrorLog to CommonLog
