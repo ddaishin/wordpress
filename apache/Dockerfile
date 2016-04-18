@@ -61,7 +61,7 @@ RUN curl -o wordpress.tar.gz -SL https://ja.wordpress.org/${WORDPRESS_VERSION}.t
 	&& rm wordpress.tar.gz \
 	&& chown -R www-data:www-data /usr/src/wordpress
 
-RUN sed -i "s/define('WP_DEBUG', false);/define('WP_DEBUG', true);/g" /usr/src/wordpress/wp-config-sample.php
+RUN sed -i "s/define('WP_DEBUG', false);/define('WP_DEBUG', true);\r\ndefine('WP_SITEURL', 'http://'.$_SERVER['SERVER_NAME'].':'.$_SERVER['SERVER_PORT']);/g" /usr/src/wordpress/wp-config-sample.php
 
 COPY docker-entrypoint.sh /entrypoint.sh
 
