@@ -74,7 +74,7 @@ COPY docker-entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 # supervisor setup
-ADD supervisord.conf /etc/supervisor.conf
+ADD supervisord.conf /etc/supervisord.conf
 RUN echo '[program:apache2-foreground]' >> /etc/supervisord.conf
 RUN echo 'command=apache2-foreground'   >> /etc/supervisord.conf
 
