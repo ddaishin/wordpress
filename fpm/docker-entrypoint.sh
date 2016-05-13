@@ -60,9 +60,8 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
 			chown www-data:www-data .htaccess
 		fi
 
-		echo "1/* * * * * root curl -silent http://" >> /etc/crontab
-		echo `hostname -i` >> /etc/crontab
-		echo "/wp-cron.php?doing_wp_cron" >> /etc/crontab
+		host-ip = hostname -i;
+		echo "1/* * * * * root curl -silent http://$(host-ip)/wp-cron.php?doing_wp_cron" >> /etc/crontab
 
 		/usr/bin/supervisord -c /etc/supervisord.conf &
 	fi
