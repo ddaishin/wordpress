@@ -70,12 +70,9 @@ RUN sed -i "s/define('WP_DEBUG', false);/define('WP_DEBUG', true);\r\ndefine('DI
 
 COPY docker-entrypoint.sh /entrypoint.sh
 
-# grr, ENTRYPOINT resets CMD now
-ENTRYPOINT ["/entrypoint.sh"]
-
 # supervisor setup
 ADD supervisord.conf /etc/supervisord.conf
-RUN echo '[program:apache2-foreground]' >> /etc/supervisord.conf
-RUN echo 'command=apache2-foreground'   >> /etc/supervisord.conf
 
-CMD /usr/bin/supervisord -c /etc/supervisord.conf
+# grr, ENTRYPOINT resets CMD now
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["apache2-foreground"]
