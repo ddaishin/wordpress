@@ -61,8 +61,8 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
 		fi
 
 		if [ ! -e /etc/cron.d/wp-cron ]; then
-			host-ip = hostname -i;
-			echo "1/* * * * * root curl -silent http://$host-ip/wp-cron.php?doing_wp_cron" >> /etc/cron.d/wp-cron
+			hostip="`hostname -i`";
+			echo "1/* * * * * root curl -silent http://$hostip/wp-cron.php?doing_wp_cron" >> /etc/cron.d/wp-cron
 		fi
 
 		/usr/bin/supervisord -c /etc/supervisord.conf &
