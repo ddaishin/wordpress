@@ -2,10 +2,15 @@ FROM php:5.6-apache
 
 RUN a2enmod rewrite expires
 
-# install the PHP extensions we need and vim git
-RUN apt-get update && apt-get install -y libpng12-dev libjpeg-dev vim git && rm -rf /var/lib/apt/lists/* \
+# install the PHP extensions
+RUN apt-get update && apt-get upgrade -y && apt-get install -y libpng12-dev libjpeg-dev cron supervisor \
 	&& docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
 	&& docker-php-ext-install gd mysqli opcache mbstring
+
+RUN apt-get autoremove && \
+	apt-get autoclean && \
+	apt-get clean && \
+	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # set recommended PHP.ini settings
 # see https://secure.php.net/manual/en/opcache.installation.php
@@ -53,7 +58,7 @@ VOLUME /var/www/html
 
 ENV TZ JST-9
 ENV WORDPRESS_VERSION latest-ja
-ENV XDEBUG_CONFIG remote_host=192.168.99.1
+ENV XDEBUG_CONFIG remote_host=
 
 # upstream tarballs include ./wordpress/ so this gives us /usr/src/wordpress
 RUN curl -o wordpress.tar.gz -SL https://ja.wordpress.org/${WORDPRESS_VERSION}.tar.gz \
@@ -61,10 +66,16 @@ RUN curl -o wordpress.tar.gz -SL https://ja.wordpress.org/${WORDPRESS_VERSION}.t
 	&& rm wordpress.tar.gz \
 	&& chown -R www-data:www-data /usr/src/wordpress
 
-RUN sed -i "s/define('WP_DEBUG', false);/define('WP_DEBUG', true);\r\ndefine('WP_SITEURL', 'http://'.$_SERVER['SERVER_NAME'].':'.$_SERVER['SERVER_PORT']);/g" /usr/src/wordpress/wp-config-sample.php
+RUN sed -i "s/define('WP_DEBUG', false);/define('WP_DEBUG', true);\r\ndefine('DISABLE_WP_CRON', true);\r\ndefine('WP_SITEURL', 'http://'.$_SERVER['SERVER_NAME'].':'.$_SERVER['SERVER_PORT']);/g" /usr/src/wordpress/wp-config-sample.php
 
 COPY docker-entrypoint.sh /entrypoint.sh
 
 # grr, ENTRYPOINT resets CMD now
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["apache2-foreground"]
+
+# supervisor setup
+ADD supervisord.conf /etc/supervisor.conf
+RUN echo '[program:apache2-foreground]' >> /etc/supervisord.conf
+RUN echo 'command=apache2-foreground'   >> /etc/supervisord.conf
+
+CMD /usr/bin/supervisord -c /etc/supervisord.conf
