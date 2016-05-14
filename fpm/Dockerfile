@@ -54,14 +54,6 @@ ENV TZ JST-9
 ENV WORDPRESS_VERSION latest-ja
 ENV XDEBUG_CONFIG remote_host=
 
-# upstream tarballs include ./wordpress/ so this gives us /usr/src/wordpress
-RUN curl -o wordpress.tar.gz -SL https://ja.wordpress.org/${WORDPRESS_VERSION}.tar.gz \
-	&& tar -xzf wordpress.tar.gz -C /usr/src/ \
-	&& rm wordpress.tar.gz \
-	&& chown -R www-data:www-data /usr/src/wordpress
-
-RUN sed -i "s/define('WP_DEBUG', false);/define('WP_DEBUG', true);\r\ndefine('DISABLE_WP_CRON', true);/g" /usr/src/wordpress/wp-config-sample.php
-
 COPY docker-entrypoint.sh /entrypoint.sh
 
 # supervisor setup
