@@ -41,6 +41,14 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
 			echo >&2 "WARNING: $(pwd) is not empty - press Ctrl+C now if this is an error!"
 			( set -x; ls -A; sleep 10 )
 		fi
+
+		curl -o wordpress.tar.gz -SL https://ja.wordpress.org/$WORDPRESS_VERSION.tar.gz
+		tar -xzf wordpress.tar.gz -C /usr/src/
+		rm wordpress.tar.gz
+		chown -R www-data:www-data /usr/src/wordpress
+
+		sed -i "s/define('WP_DEBUG', false);/define('WP_DEBUG', true);\r\ndefine('DISABLE_WP_CRON', true);/g" /usr/src/wordpress/wp-config-sample.php
+
 		tar cf - --one-file-system -C /usr/src/wordpress . | tar xf -
 		echo >&2 "Complete! WordPress has been successfully copied to $(pwd)"
 		if [ ! -e .htaccess ]; then
