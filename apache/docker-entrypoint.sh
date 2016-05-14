@@ -73,8 +73,9 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
 			echo "1/* * * * * root curl -silent http://$(hostname -i)/wp-cron.php?doing_wp_cron" > /etc/cron.d/wp-cron
 		fi
 
-		/usr/bin/supervisord -c /etc/supervisord.conf &
 	fi
+
+	/usr/bin/supervisord -c /etc/supervisord.conf &
 
 	# TODO handle WordPress upgrades magically in the same way, but only if wp-includes/version.php's $wp_version is less than /usr/src/wordpress/wp-includes/version.php's $wp_version
 
