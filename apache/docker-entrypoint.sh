@@ -43,7 +43,7 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
 		fi
 
 		if [ ! -d /usr/src/wordpress ]; then
-			curl -sSL https://ja.wordpress.org/$WORDPRESS_VERSION.tar.gz | tar -xz -C /usr/src/ && chown -R www-data:www-data /usr/src/wordpress
+			curl -SL https://ja.wordpress.org/$WORDPRESS_VERSION.tar.gz | tar -xz -C /usr/src/ && chown -R www-data:www-data /usr/src/wordpress
 			sed -i "s/define('WP_DEBUG', false);/define('WP_DEBUG', true);\r\ndefine('DISABLE_WP_CRON', true);/g" /usr/src/wordpress/wp-config-sample.php
 		fi
 
