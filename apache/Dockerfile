@@ -60,8 +60,8 @@ ENV WORDPRESS_VERSION latest-ja
 ENV XDEBUG_CONFIG remote_host=
 
 # Download Wordpress
-RUN curl -SL https://ja.wordpress.org/${WORDPRESS_VERSION}.tar.gz | tar -xz -C /usr/src/
-	&& chown -R www-data:www-data /usr/src/wordpress
+RUN curl -SL https://ja.wordpress.org/${WORDPRESS_VERSION}.tar.gz | tar -xz -C /usr/src/ \
+	&& chown -R www-data:www-data /usr/src/wordpress \
 	&& sed -i "s/define('WP_DEBUG', false);/define('WP_DEBUG', true);\r\ndefine('DISABLE_WP_CRON', true);/g" /usr/src/wordpress/wp-config-sample.php
 
 COPY docker-entrypoint.sh /entrypoint.sh
