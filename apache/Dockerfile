@@ -59,9 +59,6 @@ VOLUME /var/www/html
 ENV TZ JST-9
 ENV WORDPRESS_VERSION latest-ja
 ENV XDEBUG_CONFIG remote_host=
-ENV WORDPRESS_DB_HOST
-ENV WORDPRESS_DB_NAME
-ENV WORDPRESS_DB_PASSWORD
 
 COPY docker-entrypoint.sh /entrypoint.sh
 
