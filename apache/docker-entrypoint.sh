@@ -42,6 +42,12 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
 			( set -x; ls -A; sleep 10 )
 		fi
 
+		if [ ! -d /usr/src/wordpress ]; then
+			curl -SL https://ja.wordpress.org/${WORDPRESS_VERSION:=latest-ja}.tar.gz | tar -xz -C /usr/src/ \
+			&& chown -R www-data:www-data /usr/src/wordpress \
+			&& sed -i "s/define('WP_DEBUG', false);/define('WP_DEBUG', true);\r\ndefine('DISABLE_WP_CRON', true);/g" /usr/src/wordpress/wp-config-sample.php
+		fi
+
 		tar cf - --one-file-system -C /usr/src/wordpress . | tar xf -
 		echo >&2 "Complete! WordPress has been successfully copied to $(pwd)"
 		if [ ! -e .htaccess ]; then
