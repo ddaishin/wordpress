@@ -50,6 +50,11 @@ RUN curl -o /bin/wp-cli.phar https://raw.githubusercontent.com/wp-cli/builds/gh-
 COPY wp-su.sh /bin/wp
 RUN chmod +x /bin/wp-cli.phar
 
+# Download Wordpress
+RUN curl -SL https://ja.wordpress.org/${WORDPRESS_VERSION}.tar.gz | tar -xz -C /usr/src/
+	&& chown -R www-data:www-data /usr/src/wordpress
+	&& sed -i "s/define('WP_DEBUG', false);/define('WP_DEBUG', true);\r\ndefine('DISABLE_WP_CRON', true);/g" /usr/src/wordpress/wp-config-sample.php
+
 # fix permission for osx
 RUN usermod -u 1000 www-data \
 	&& usermod -G staff www-data
