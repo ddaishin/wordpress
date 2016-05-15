@@ -5,12 +5,11 @@ RUN a2enmod rewrite expires
 # install the PHP extensions
 RUN apt-get update && apt-get upgrade -y && apt-get install -y libpng12-dev libjpeg-dev cron supervisor vim \
 	&& docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
-	&& docker-php-ext-install gd mysqli opcache mbstring
-
-RUN apt-get autoremove && \
-	apt-get autoclean && \
-	apt-get clean && \
-	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+	&& docker-php-ext-install gd mysqli opcache mbstring \
+	&& apt-get autoremove \
+	&& apt-get autoclean \
+	&& apt-get clean \
+	&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # set recommended PHP.ini settings
 # see https://secure.php.net/manual/en/opcache.installation.php
@@ -41,19 +40,14 @@ RUN { \
 	} > /usr/local/etc/php/conf.d/php-extra.ini
 
 # replace ErrorLog to CommonLog
-RUN sed -i -e"s/CustomLog/#CustomLog/" /etc/apache2/apache2.conf
-RUN sed -i -e"s/ErrorLog \/proc\/self\/fd\/2/ErrorLog \/proc\/self\/fd\/1/" /etc/apache2/apache2.conf
+RUN sed -i -e"s/CustomLog/#CustomLog/" /etc/apache2/apache2.conf \
+	&& sed -i -e"s/ErrorLog \/proc\/self\/fd\/2/ErrorLog \/proc\/self\/fd\/1/" /etc/apache2/apache2.conf
 
 # Add WP-CLI
 # see https://github.com/conetix/docker-wordpress-wp-cli
-RUN curl -o /bin/wp-cli.phar https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+RUN curl -o /bin/wp-cli.phar https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
+	&& chmod +x /bin/wp-cli.phar
 COPY wp-su.sh /bin/wp
-RUN chmod +x /bin/wp-cli.phar
-
-# Download Wordpress
-RUN curl -SL https://ja.wordpress.org/${WORDPRESS_VERSION}.tar.gz | tar -xz -C /usr/src/
-	&& chown -R www-data:www-data /usr/src/wordpress
-	&& sed -i "s/define('WP_DEBUG', false);/define('WP_DEBUG', true);\r\ndefine('DISABLE_WP_CRON', true);/g" /usr/src/wordpress/wp-config-sample.php
 
 # fix permission for osx
 RUN usermod -u 1000 www-data \
@@ -64,6 +58,11 @@ VOLUME /var/www/html
 ENV TZ JST-9
 ENV WORDPRESS_VERSION latest-ja
 ENV XDEBUG_CONFIG remote_host=
+
+# Download Wordpress
+RUN curl -SL https://ja.wordpress.org/${WORDPRESS_VERSION}.tar.gz | tar -xz -C /usr/src/
+	&& chown -R www-data:www-data /usr/src/wordpress
+	&& sed -i "s/define('WP_DEBUG', false);/define('WP_DEBUG', true);\r\ndefine('DISABLE_WP_CRON', true);/g" /usr/src/wordpress/wp-config-sample.php
 
 COPY docker-entrypoint.sh /entrypoint.sh
 
