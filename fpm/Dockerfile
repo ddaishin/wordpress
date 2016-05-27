@@ -3,11 +3,10 @@ FROM php:5.6-fpm
 # install the PHP extensions
 RUN apt-get update && apt-get upgrade -y && apt-get install -y libpng12-dev libjpeg-dev cron supervisor vim \
 	&& docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
-	&& docker-php-ext-install gd mysqli opcache mbstring
-
-RUN apt-get autoremove && \
-	apt-get autoclean && \
-	apt-get clean && \
+	&& docker-php-ext-install gd mysql mysqli opcache mbstring \
+	&& apt-get autoremove \
+	&& apt-get autoclean \
+	&& apt-get clean \
 	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # set recommended PHP.ini settings
