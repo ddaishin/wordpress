@@ -42,6 +42,7 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
 			( set -x; ls -A; sleep 10 )
 		fi
 
+		# https://ja.wordpress.org/releases/
 		if [ ! -d /usr/src/wordpress ]; then
 			curl -SL https://ja.wordpress.org/${WORDPRESS_VERSION:=latest-ja}.tar.gz | tar -xz -C /usr/src/ \
 			&& chown -R www-data:www-data /usr/src/wordpress \
