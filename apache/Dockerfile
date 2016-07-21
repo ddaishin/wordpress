@@ -39,10 +39,6 @@ RUN { \
 		echo 'upload_max_filesize=2048G'; \
 	} > /usr/local/etc/php/conf.d/php-extra.ini
 
-# replace ErrorLog to CommonLog
-RUN sed -i -e"s/CustomLog/#CustomLog/" /etc/apache2/apache2.conf \
-	&& sed -i -e"s/ErrorLog \/proc\/self\/fd\/2/ErrorLog \/proc\/self\/fd\/1/" /etc/apache2/apache2.conf
-
 # Add WP-CLI
 # see https://github.com/conetix/docker-wordpress-wp-cli
 RUN curl -o /bin/wp-cli.phar https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
