@@ -114,7 +114,7 @@ RUN set -xe \
 		\
 		--disable-cgi \
 		\
-		--disable-dom --disable-simplexml --disable-ssl \
+		--disable-dom --disable-simplexml --disable-openssl \
 		\
 # --enable-ftp is included here because ftp_ssl_connect() needs ftp to be compiled statically (see https://github.com/docker-library/php/issues/236)
 		--enable-ftp \
