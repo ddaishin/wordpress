@@ -1,4 +1,4 @@
-FROM debian:jessie
+FROM centos:latest
 
 # persistent / runtime deps
 ENV PHPIZE_DEPS \
@@ -139,8 +139,8 @@ RUN chmod +x /usr/local/bin/docker-php-*
 RUN a2enmod rewrite expires
 
 # install the PHP extensions
-RUN apt-get update && apt-get upgrade -y && apt-get install -y cron supervisor vim \
-#	&& docker-php-ext-configure gd --with-libdir=lib64 --with-png-dir=/usr \
+RUN apt-get update && apt-get upgrade -y && apt-get install -y libpng12-dev libjpeg-dev cron supervisor vim \
+	&& docker-php-ext-configure gd --with-libdir=lib64 --with-png-dir=/usr --with-jpeg-dir=/usr \
 	&& docker-php-ext-install gd mysql mysqli opcache mbstring \
 	&& apt-get autoremove \
 	&& apt-get autoclean \
