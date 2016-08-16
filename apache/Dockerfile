@@ -133,6 +133,8 @@ RUN set -xe \
 	\
 	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $buildDeps
 
+COPY docker-php-ext-* /usr/local/bin/
+
 RUN a2enmod rewrite expires
 
 # install the PHP extensions
@@ -178,7 +180,6 @@ RUN curl -o /bin/wp-cli.phar https://raw.githubusercontent.com/wp-cli/builds/gh-
 	&& chmod +x /bin/wp-cli.phar
 
 COPY wp-su.sh /bin/wp
-COPY docker-php-ext-* /usr/local/bin/
 COPY apache2-foreground /usr/local/bin/
 COPY docker-entrypoint.sh /entrypoint.sh
 
