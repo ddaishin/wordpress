@@ -1,4 +1,4 @@
-FROM centos:latest
+FROM debian:wheezy
 
 # persistent / runtime deps
 ENV PHPIZE_DEPS \
