@@ -105,7 +105,7 @@ RUN set -xe \
 	" \
 	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends && rm -rf /var/lib/apt/lists/* \
 	\
-	&& tar -zxf /usr/src/php.tar.gz -C "/usr/src/php" --strip-components=1 \
+	&& tar -zxf /usr/src/php.tar.gz -C /usr/src/php --strip-components=1 \
 	&& cd /usr/src/php \
 	&& ./configure \
 		--with-config-file-path="$PHP_INI_DIR" \
