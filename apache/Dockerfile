@@ -90,7 +90,7 @@ ENV PHP_SHA256 1abe07c1fdd64184708a3ba179abcfcca5662a4e0d2037eb2748b75abc42e767
 
 RUN set -xe \
 	&& cd /usr/src \
-	&& curl -fSL "http://museum.php.net/php5/$PHP_FILENAME" -o php.tar.xz
+	&& curl -fSL "http://museum.php.net/php5/$PHP_FILENAME" -o php.tar.gz
 
 COPY docker-php-source /usr/local/bin/
 
@@ -105,7 +105,7 @@ RUN set -xe \
 	" \
 	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends && rm -rf /var/lib/apt/lists/* \
 	\
-	&& tar -Jxf /usr/src/php.tar.xz -C "/usr/src/php" --strip-components=1 \
+	&& tar -zxf /usr/src/php.tar.gz -C "/usr/src/php" --strip-components=1 \
 	&& cd /usr/src/php \
 	&& ./configure \
 		--with-config-file-path="$PHP_INI_DIR" \
