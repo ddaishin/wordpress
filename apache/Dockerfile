@@ -85,20 +85,12 @@ ENV PHP_EXTRA_CONFIGURE_ARGS --with-apxs2
 ENV GPG_KEYS 0BD78B5F97500D450838F95DFE857D9A90D90EC1 6E4F6AB321FDC07F2C332E3AC2BF0BC433CFC8B3
 
 ENV PHP_VERSION 5.2.17
-ENV PHP_FILENAME php-5.2.17.tar.xz
+ENV PHP_FILENAME php-5.2.17.tar.gz
 ENV PHP_SHA256 1abe07c1fdd64184708a3ba179abcfcca5662a4e0d2037eb2748b75abc42e767
 
 RUN set -xe \
 	&& cd /usr/src \
-	&& curl -fSL "http://php.net/get/$PHP_FILENAME/from/this/mirror" -o php.tar.xz \
-	&& echo "$PHP_SHA256 *php.tar.xz" | sha256sum -c - \
-	&& curl -fSL "http://php.net/get/$PHP_FILENAME.asc/from/this/mirror" -o php.tar.xz.asc \
-	&& export GNUPGHOME="$(mktemp -d)" \
-	&& for key in $GPG_KEYS; do \
-		gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
-	done \
-	&& gpg --batch --verify php.tar.xz.asc php.tar.xz \
-	&& rm -r "$GNUPGHOME"
+	&& curl -fSL "http://museum.php.net/php5/$PHP_FILENAME" -o php.tar.xz
 
 COPY docker-php-source /usr/local/bin/
 
