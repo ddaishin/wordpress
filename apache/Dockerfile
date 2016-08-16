@@ -1,5 +1,9 @@
 FROM php:5.6-apache
 
+ENV PHP_VERSION 5.2.17
+ENV PHP_FILENAME php-5.2.17.tar.xz
+ENV PHP_SHA256 1abe07c1fdd64184708a3ba179abcfcca5662a4e0d2037eb2748b75abc42e767
+
 RUN a2enmod rewrite expires
 
 # install the PHP extensions
