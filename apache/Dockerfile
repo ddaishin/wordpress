@@ -129,7 +129,7 @@ RUN set -xe \
 		--with-zlib \
 		\
 		$PHP_EXTRA_CONFIGURE_ARGS \
-	&& make -j"$(nproc)" -L /lib64 -lusb-1.0 -l pthread \
+	&& make -j"$(nproc)" -L /lib64 -lusb-1.0 \
 	&& make install \
 	&& { find /usr/local/bin /usr/local/sbin -type f -executable -exec strip --strip-all '{}' + || true; } \
 	&& make clean \
