@@ -93,8 +93,6 @@ RUN set -xe \
 	&& curl -fSL "http://museum.php.net/php5/$PHP_FILENAME" -o php.tar.gz \
 	&& mkdir /usr/src/php
 
-COPY docker-php-source /usr/local/bin/
-
 RUN set -xe \
 	&& buildDeps=" \
 		$PHP_EXTRA_BUILD_DEPS \
@@ -131,7 +129,7 @@ RUN set -xe \
 	&& make install \
 	&& { find /usr/local/bin /usr/local/sbin -type f -executable -exec strip --strip-all '{}' + || true; } \
 	&& make clean \
-	&& docker-php-source delete \
+	&& rm -rf /usr/src/php \
 	\
 	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $buildDeps
 
