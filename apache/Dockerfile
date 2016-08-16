@@ -134,6 +134,7 @@ RUN set -xe \
 	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $buildDeps
 
 COPY docker-php-ext-* /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-php-ext-*
 
 RUN a2enmod rewrite expires
 
