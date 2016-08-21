@@ -28,8 +28,6 @@ RUN { \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
 RUN { \
-        echo 'extension = apcu.so'; \
-        echo 'extension = apc.so'; \
         echo 'apc.enabled=1'; \
         echo 'apc.enable_cli=1'; \
         echo 'apc.shm_size=64M'; \
