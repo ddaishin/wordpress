@@ -1,11 +1,15 @@
-FROM php:5.6-apache
+FROM php:7-apache
 
 RUN a2enmod rewrite expires
 
 # install the PHP extensions
 RUN apt-get update && apt-get upgrade -y && apt-get install -y libpng12-dev libjpeg-dev cron supervisor vim \
 	&& docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
-	&& docker-php-ext-install gd mysql mysqli opcache mbstring \
+	&& docker-php-ext-install gd mysqli opcache mbstring \
+	&& pecl install apcu-5.1.5 \
+    && docker-php-ext-enable apcu \
+    && pecl install apcu_bc-1.0.3 \
+    && docker-php-ext-enable apc \
 	&& apt-get autoremove \
 	&& apt-get autoclean \
 	&& apt-get clean \
@@ -18,9 +22,19 @@ RUN { \
 		echo 'opcache.interned_strings_buffer=8'; \
 		echo 'opcache.max_accelerated_files=4000'; \
 		echo 'opcache.revalidate_freq=0'; \
+		echo 'opcache.validate_timestamps=0'; \
 		echo 'opcache.fast_shutdown=1'; \
 		echo 'opcache.enable_cli=1'; \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
+
+RUN { \
+        echo 'extension = apcu.so'; \
+        echo 'extension = apc.so'; \
+        echo 'apc.enabled=1'; \
+        echo 'apc.enable_cli=1'; \
+        echo 'apc.shm_size=64M'; \
+        echo 'apc.mmap_file_mask=/tmp/apc7.XXXXXX'; \
+    } > /usr/local/etc/php/conf.d/apcu.ini
 
 # set xdebug
 # see https://gist.github.com/chadrien/c90927ec2d160ffea9c4
