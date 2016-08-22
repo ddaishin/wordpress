@@ -7,9 +7,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y libpng12-dev libj
 	&& docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
 	&& docker-php-ext-install gd mysqli opcache mbstring \
 	&& pecl install apcu-5.1.5 \
-    && docker-php-ext-enable apcu \
     && pecl install apcu_bc-1.0.3 \
-    && docker-php-ext-enable apc \
 	&& apt-get autoremove \
 	&& apt-get autoclean \
 	&& apt-get clean \
@@ -29,6 +27,7 @@ RUN { \
 
 RUN { \
         echo 'extension = apcu.so'; \
+        echo 'extension = apc.so'; \
         echo 'apc.enabled=1'; \
         echo 'apc.enable_cli=1'; \
         echo 'apc.shm_size=64M'; \
