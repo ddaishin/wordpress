@@ -39,6 +39,8 @@ RUN { \
 		echo 'upload_max_filesize=2048G'; \
 	} > /usr/local/etc/php/conf.d/php-extra.ini
 
+# dns
+RUN echo 'nameserver 8.8.8.8' > /etc/resolv.conf
 
 VOLUME /var/www/html
 
