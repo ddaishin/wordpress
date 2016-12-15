@@ -46,8 +46,8 @@ RUN curl -o /bin/wp-cli.phar https://raw.githubusercontent.com/wp-cli/builds/gh-
 COPY wp-su.sh /bin/wp
 
 # fix permission for osx
-#RUN usermod -u 1000 www-data \
-#	&& usermod -G staff www-data
+RUN usermod -u 1000 www-data \
+	&& usermod -G staff www-data
 
 # dns
 RUN echo 'nameserver 8.8.8.8' > /etc/resolv.conf
