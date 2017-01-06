@@ -53,9 +53,6 @@ COPY wp-su.sh /bin/wp
 RUN usermod -u 1000 www-data \
 	&& usermod -G staff www-data
 
-# dns
-RUN echo 'nameserver 8.8.8.8' > /etc/resolv.conf
-
 VOLUME /var/www/html
 
 ENV TZ JST-9
