@@ -3,9 +3,9 @@ FROM php:5.6-apache
 RUN a2enmod rewrite expires
 
 # install the PHP extensions
-RUN apt-get update && apt-get upgrade -y && apt-get install -y libpng12-dev libjpeg-dev cron supervisor vim libmagickwand-dev libmagickcore-dev imagemagick \
+RUN apt-get update && apt-get upgrade -y && apt-get install -y libpng12-dev libjpeg-dev cron supervisor vim libmagickwand-dev libmagickcore-dev imagemagick libicu-dev \
 	&& docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
-	&& docker-php-ext-install zip gd mysql mysqli opcache mbstring \
+	&& docker-php-ext-install zip gd mysql mysqli opcache mbstring intl \
 	&& apt-get autoremove \
 	&& apt-get autoclean \
 	&& apt-get clean \
