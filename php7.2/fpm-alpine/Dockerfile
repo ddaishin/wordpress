@@ -10,13 +10,16 @@ RUN apk add --no-cache \
 # install the PHP extensions we need
 RUN set -ex; \
 	\
-	apk add --no-cache --virtual .build-deps \
+	apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
 		libjpeg-turbo-dev \
 		libpng-dev \
+		icu-dev \
 	; \
 	\
 	docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr; \
-	docker-php-ext-install gd mysqli opcache zip mbstring; \
+	docker-php-ext-install gd mysqli opcache zip mbstring intl; \
+	pecl install xdebug; \
+	docker-php-ext-enable xdebug; \
 	\
 	runDeps="$( \
 		scanelf --needed --nobanner --format '%n#p' --recursive /usr/local/lib/php/extensions \
@@ -25,7 +28,7 @@ RUN set -ex; \
 			| awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
 	)"; \
 	apk add --virtual .wordpress-phpexts-rundeps $runDeps; \
-	apk del .build-deps
+	apk del .build-deps $PHPIZE_DEPS
 
 # set recommended PHP.ini settings
 # see https://secure.php.net/manual/en/opcache.installation.php
