@@ -16,8 +16,9 @@ RUN set -ex; \
 		icu-dev \
 	; \
 	\
+	NPROC=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) && \
 	docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr; \
-	docker-php-ext-install gd mysqli opcache zip mbstring intl; \
+	docker-php-ext-install -j${NPROC} gd mysqli opcache zip mbstring intl; \
 	pecl install xdebug; \
 	docker-php-ext-enable xdebug; \
 	\
