@@ -45,7 +45,7 @@ RUN { \
 # set xdebug
 RUN { \
 		echo 'xdebug.remote_enable=1'; \
-		echo 'xdebug.remote_connect_back=1'; \
+		echo 'xdebug.remote_host = docker.for.mac.localhost'; \
 	} >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
 VOLUME /var/www/html
