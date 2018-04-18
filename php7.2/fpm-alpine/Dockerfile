@@ -41,6 +41,11 @@ RUN { \
 		echo 'opcache.enable_cli=1'; \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
+# set xdebug
+RUN { \
+		echo 'xdebug.remote_enable=on'; \
+	} >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
 VOLUME /var/www/html
 
 ENV WORDPRESS_VERSION latest-ja
