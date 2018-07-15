@@ -11,8 +11,11 @@ RUN set -ex; \
 		libpng-dev \
 	; \
 	\
+	NPROC=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) && \
 	docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr; \
-	docker-php-ext-install gd mysqli opcache; \
+	docker-php-ext-install -j${NPROC} gd mysqli opcache zip mbstring; \
+	pecl install xdebug; \
+	docker-php-ext-enable xdebug; \
 	\
 # reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
 	apt-mark auto '.*' > /dev/null; \
@@ -39,20 +42,25 @@ RUN { \
 		echo 'opcache.enable_cli=1'; \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
-RUN a2enmod rewrite expires
+# set xdebug
+RUN { \
+		echo 'xdebug.remote_enable=1'; \
+		echo 'xdebug.remote_host = docker.for.mac.localhost'; \
+	} >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
+RUN a2enmod rewrite expires proxy
 
 VOLUME /var/www/html
 
-ENV WORDPRESS_VERSION 4.9.5
-ENV WORDPRESS_SHA1 6992f19163e21720b5693bed71ffe1ab17a4533a
+ENV WORDPRESS_VERSION latest-ja
 
 RUN set -ex; \
-	curl -o wordpress.tar.gz -fSL "https://wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz"; \
-	echo "$WORDPRESS_SHA1 *wordpress.tar.gz" | sha1sum -c -; \
+	curl -o wordpress.tar.gz -fSL "https://ja.wordpress.org/$WORDPRESS_VERSION.tar.gz"; \
 # upstream tarballs include ./wordpress/ so this gives us /usr/src/wordpress
 	tar -xzf wordpress.tar.gz -C /usr/src/; \
 	rm wordpress.tar.gz; \
-	chown -R www-data:www-data /usr/src/wordpress
+	chown -R www-data:www-data /usr/src/wordpress; \
+	sed -i "s/define('WP_DEBUG', false);/define('WP_DEBUG', true);\r\ndefine('DISABLE_WP_CRON', true);\r\ndefine('WP_SITEURL', 'http:\/\/' . \$_SERVER['HTTP_HOST'] );/g" /usr/src/wordpress/wp-config-sample.php;
 
 COPY docker-entrypoint.sh /usr/local/bin/
 
