@@ -48,7 +48,12 @@ RUN { \
 		echo 'xdebug.remote_host = docker.for.mac.localhost'; \
 	} >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
-RUN a2enmod rewrite expires proxy
+# Self signed SSL
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get update; apt-get install -y --no-install-recommends ssl-cert; make-ssl-cert generate-default-snakeoil && apt-get clean \
+                                                                                         && rm -rf /var/lib/apt/lists/*
+
+RUN a2enmod rewrite expires proxy proxy_http proxy_connect headers ssl && a2ensite default-ssl
 
 VOLUME /var/www/html
 
