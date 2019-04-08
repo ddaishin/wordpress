@@ -37,6 +37,7 @@ RUN { \
 		echo 'opcache.revalidate_freq=2'; \
 		echo 'opcache.fast_shutdown=1'; \
 		echo 'opcache.enable_cli=1'; \
+		echo 'opcache.validate_timestamps=1'; \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
 # https://codex.wordpress.org/Editing_wp-config.php#Configure_Error_Logging
 RUN { \
