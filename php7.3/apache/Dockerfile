@@ -1,35 +1,36 @@
-FROM php:7.2-fpm-alpine
-
-# docker-entrypoint.sh dependencies
-RUN apk add --no-cache \
-# in theory, docker-entrypoint.sh is POSIX-compliant, but priority is a working, consistent image
-		bash \
-# BusyBox sed is not sufficient for some of our sed expressions
-		sed
+FROM php:7.3-apache
 
 # install the PHP extensions we need
 RUN set -ex; \
 	\
-	apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
-		libjpeg-turbo-dev \
+	savedAptMark="$(apt-mark showmanual)"; \
+	\
+	apt-get update; \
+	apt-get install -y --no-install-recommends \
+		libjpeg-dev \
 		libpng-dev \
-		icu-dev \
+		libzip-dev \
 	; \
 	\
 	NPROC=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) && \
 	docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr; \
-	docker-php-ext-install -j${NPROC} gd mysqli opcache zip mbstring intl; \
+	docker-php-ext-install -j${NPROC} gd mysqli opcache zip mbstring mysql; \
 	pecl install xdebug; \
 	docker-php-ext-enable xdebug; \
 	\
-	runDeps="$( \
-		scanelf --needed --nobanner --format '%n#p' --recursive /usr/local/lib/php/extensions \
-			| tr ',' '\n' \
-			| sort -u \
-			| awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
-	)"; \
-	apk add --virtual .wordpress-phpexts-rundeps $runDeps; \
-	apk del .build-deps $PHPIZE_DEPS
+# reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
+	apt-mark auto '.*' > /dev/null; \
+	apt-mark manual $savedAptMark; \
+	ldd "$(php -r 'echo ini_get("extension_dir");')"/*.so \
+		| awk '/=>/ { print $3 }' \
+		| sort -u \
+		| xargs -r dpkg-query -S \
+		| cut -d: -f1 \
+		| sort -u \
+		| xargs -rt apt-mark manual; \
+	\
+	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
+	rm -rf /var/lib/apt/lists/*
 
 # set recommended PHP.ini settings
 # see https://secure.php.net/manual/en/opcache.installation.php
@@ -60,6 +61,16 @@ RUN { \
 		echo 'xdebug.remote_host = docker.for.mac.localhost'; \
 	} >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
+# Self signed SSL and SSMTP
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get update; apt-get install -y --no-install-recommends ssmtp ssl-cert; make-ssl-cert generate-default-snakeoil && apt-get clean \
+                                                                                         && rm -rf /var/lib/apt/lists/*
+RUN { \
+		echo 'sendmail_path = "/usr/sbin/ssmtp -t"'; \
+	} >> /usr/local/etc/php/conf.d/docker-php-ext-smtp.ini
+
+RUN a2enmod rewrite expires proxy proxy_http proxy_connect headers ssl && a2ensite default-ssl
+
 VOLUME /var/www/html
 
 ENV WORDPRESS_VERSION latest-ja
@@ -75,4 +86,4 @@ RUN set -ex; \
 COPY docker-entrypoint.sh /usr/local/bin/
 
 ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["php-fpm"]
+CMD ["apache2-foreground"]
