@@ -48,10 +48,13 @@ RUN { \
 		echo 'xdebug.remote_host = docker.for.mac.localhost'; \
 	} >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
-# Self signed SSL
+# Self signed SSL and SSMTP
 ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get update; apt-get install -y --no-install-recommends ssl-cert; make-ssl-cert generate-default-snakeoil && apt-get clean \
+RUN apt-get update; apt-get install -y --no-install-recommends ssmtp ssl-cert; make-ssl-cert generate-default-snakeoil && apt-get clean \
                                                                                          && rm -rf /var/lib/apt/lists/*
+RUN { \
+		echo 'sendmail_path = "/usr/sbin/ssmtp -t"'; \
+	} >> /usr/local/etc/php/conf.d/docker-php-ext-smtp.ini
 
 RUN a2enmod rewrite expires proxy proxy_http proxy_connect headers ssl && a2ensite default-ssl
 
