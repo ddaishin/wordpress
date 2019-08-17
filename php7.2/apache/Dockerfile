@@ -61,7 +61,7 @@ RUN { \
 # set xdebug
 RUN { \
 		echo 'xdebug.remote_enable=1'; \
-		echo 'xdebug.remote_host = docker.for.mac.localhost'; \
+		echo 'xdebug.remote_host = host.docker.internal'; \
 	} >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
 # Self signed SSL and SSMTP
