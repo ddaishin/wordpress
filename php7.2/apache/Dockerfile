@@ -9,11 +9,14 @@ RUN set -ex; \
 	apt-get install -y --no-install-recommends \
 		libjpeg-dev \
 		libpng-dev \
+		libzip-dev \
+		libmemcached-dev \
 	; \
 	\
 	NPROC=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) && \
 	docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr; \
-	docker-php-ext-install -j${NPROC} gd mysqli opcache zip mbstring; \
+	docker-php-ext-install -j${NPROC} gd mysqli opcache zip mbstring bcmath exif; \
+	pecl install memcached; \
 	pecl install xdebug; \
 	docker-php-ext-enable xdebug; \
 	\
