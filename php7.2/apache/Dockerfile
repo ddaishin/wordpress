@@ -80,7 +80,7 @@ RUN set -ex; \
 	tar -xzf wordpress.tar.gz -C /usr/src/; \
 	rm wordpress.tar.gz; \
 	chown -R www-data:www-data /usr/src/wordpress; \
-	sed -i "s/define('WP_DEBUG', false);/define('WP_DEBUG', true);\r\ndefine('DISABLE_WP_CRON', true);\r\ndefine('WP_SITEURL', 'http:\/\/' . \$_SERVER['HTTP_HOST'] );/g" /usr/src/wordpress/wp-config-sample.php;
+	sed -i "s/define('WP_DEBUG', false);/define('WP_DEBUG', true);\r\ndefine('WP_DEBUG_LOG', true);\r\ndefine('WP_DEBUG_DISPLAY', false);\r\ndefine('DISABLE_WP_CRON', true);\r\ndefine('WP_SITEURL', 'https:\/\/' . \$_SERVER['HTTP_HOST'] );/g" /usr/src/wordpress/wp-config-sample.php;
 
 COPY docker-entrypoint.sh /usr/local/bin/
 
