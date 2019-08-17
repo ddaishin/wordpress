@@ -14,7 +14,6 @@ RUN set -ex; \
 		libmemcached-dev \
 	; \
 	\
-	nproc=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) && \
 	docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr; \
 	docker-php-ext-install -j "$(nproc)" \
 		bcmath \
