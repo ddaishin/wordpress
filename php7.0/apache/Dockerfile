@@ -27,6 +27,8 @@ RUN set -ex; \
 	docker-php-ext-enable imagick; \
 	pecl install memcached; \
 	docker-php-ext-enable memcached; \
+	pecl install apcu; \
+	docker-php-ext-enable apcu; \
 	pecl install xdebug; \
 	docker-php-ext-enable xdebug; \
 	\
