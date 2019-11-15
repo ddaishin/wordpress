@@ -1,17 +1,20 @@
 FROM php:7.2-fpm-alpine
 
-# docker-entrypoint.sh dependencies
+# persistent dependencies
 RUN apk add --no-cache \
 # in theory, docker-entrypoint.sh is POSIX-compliant, but priority is a working, consistent image
 		bash \
 # BusyBox sed is not sufficient for some of our sed expressions
-		sed
+		sed \
+# Ghostscript is required for rendering PDF previews
+		ghostscript
 
 # install the PHP extensions we need (https://make.wordpress.org/hosting/handbook/handbook/server-environment/#php-extensions)
 RUN set -ex; \
 	\
 	apk add --no-cache --virtual .build-deps \
 		$PHPIZE_DEPS \
+		freetype-dev \
 		imagemagick-dev \
 		libjpeg-turbo-dev \
 		libpng-dev \
@@ -19,7 +22,11 @@ RUN set -ex; \
 		icu-dev \
 	; \
 	\
-	docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr; \
+	docker-php-ext-configure gd \
+		--with-freetype-dir=/usr \
+		--with-jpeg-dir=/usr \
+		--with-png-dir=/usr \
+	; \
 	docker-php-ext-install -j "$(nproc)" \
 		bcmath \
 		exif \
